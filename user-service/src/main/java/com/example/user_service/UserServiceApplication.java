@@ -4,7 +4,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication  // This is the entry point of your Spring Boot application
-@EnableEurekaClient // Activer Eureka Client
 public class UserServiceApplication {
 
 	public static void main(String[] args) {
