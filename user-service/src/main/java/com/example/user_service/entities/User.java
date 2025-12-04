@@ -3,6 +3,7 @@ package com.example.user_service.entities;
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "users")   // <-- IMPORTANT : pas "user"
 public class User {
 
     @Id

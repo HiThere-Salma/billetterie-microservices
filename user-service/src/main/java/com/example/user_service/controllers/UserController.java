@@ -17,6 +17,13 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/testa")
+    public String tester()
+    {
+
+        return "Hello i am test from microservice-a";
+    }
+
     @PostMapping
     public User create(@RequestBody User user) {
         return userService.createUser(user);
