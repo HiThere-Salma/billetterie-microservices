@@ -1,0 +1,15 @@
+# IntelliJ / JetBrains
+.idea/
+*.iml
+out/
+
+# Maven / Java build
+**/target/
+*.class
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

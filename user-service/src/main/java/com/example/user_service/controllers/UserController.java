@@ -1,44 +1,52 @@
 package com.example.user_service.controllers;
 
 import com.example.user_service.entities.User;
-import com.example.user_service.services.UserService;
+import com.example.user_service.repositories.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class UserController {
 
-    private final UserService userService;  // This will be injected
+    private final UserRepository userRepository;
 
-    // Constructor injection (manually written)
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    @PostMapping
-    public User create(@RequestBody User user) {
-        return userService.createUser(user);
+    @GetMapping("/users")
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    @PostMapping("/users")
+    public ResponseEntity<?> createUser(@RequestBody User user) {
+
+        if (user.getEmail() == null || user.getEmail().isBlank()) {
+            return ResponseEntity.badRequest().body("Email obligatoire");
+        }
+        if (user.getNom() == null || user.getNom().isBlank()) {
+            return ResponseEntity.badRequest().body("Nom obligatoire");
+        }
+        if (user.getPassword() == null || user.getPassword().isBlank()) {
+            return ResponseEntity.badRequest().body("Mot de passe obligatoire");
+        }
+        if (user.getRole() == null) user.setRole(User.Role.CLIENT);
+
+        boolean exists = userRepository.existsByEmail(user.getEmail());
+        if (exists) {
+            return ResponseEntity.status(409).body("Email déjà utilisé");
+        }
+
+        User saved = userRepository.save(user);
+        return ResponseEntity.ok(saved);
     }
 
-    @GetMapping("/{id}")
-    public User get(@PathVariable Long id) {
-        return userService.getUser(id);
-    }
 
-    @GetMapping
-    public List<User> getAll() {
-        return userService.getAllUsers();
-    }
-
-    @PutMapping("/{id}")
-    public User update(@PathVariable Long id, @RequestBody User user) {
-        return userService.updateUser(id, user);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        userService.deleteUser(id);
+    @DeleteMapping("/users/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
     }
 }
